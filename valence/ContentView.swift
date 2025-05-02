@@ -10,50 +10,39 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @EnvironmentObject private var appState: AppState
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+        TabView(selection: $appState.selectedTab) {
+            DailyFocusView()
+                .tabItem {
+                    Label("Daily Focus", systemImage: "target")
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+                .tag(0)
+            
+            PillarTrackerView()
+                .tabItem {
+                    Label("Pillars", systemImage: "chart.bar")
                 }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+                .tag(1)
+            
+            JournalView()
+                .tabItem {
+                    Label("Journal", systemImage: "book")
+                }
+                .tag(2)
+            
+            WeeklyReviewView()
+                .tabItem {
+                    Label("Weekly Review", systemImage: "calendar")
+                }
+                .tag(3)
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: [DailyFocus.self, Pillar.self, WeeklyReview.self, JournalEntry.self], inMemory: true)
+        .environmentObject(AppState())
 }
