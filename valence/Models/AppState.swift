@@ -4,6 +4,8 @@ import SwiftData
 @Observable
 class AppState {
     var selectedTab: Int = 0
+    // Changed initial value to true to ensure window opens on launch
+    @Published var isMainWindowOpen: Bool = true 
     
     // MARK: - Model Container
     static var modelContainer: ModelContainer = {
@@ -35,4 +37,8 @@ class AppState {
     }()
     
     init() {}
+    
+    func openMainWindow() {
+        isMainWindowOpen = true
+    }
 } 
