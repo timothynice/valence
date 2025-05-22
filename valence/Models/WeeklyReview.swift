@@ -44,7 +44,7 @@ final class PillarReflection {
     var createdAt: Date
     var updatedAt: Date
     
-    init(pillarType: PillarType = .physical, score: Int = 5) {
+    init(pillarType: PillarType = .fitness, score: Int = 5) { // Updated default
         self.id = UUID()
         self.pillarType = pillarType
         self.score = score

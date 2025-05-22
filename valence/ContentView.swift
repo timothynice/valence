@@ -9,40 +9,33 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject private var appState: AppState
-    
+    // modelContext and appState are inherited from valenceApp.swift
+    // No need to declare them here if ContentView itself doesn't directly use them,
+    // but TodayView will need them from the environment.
+    // @Environment(\.modelContext) private var modelContext // Retain if ContentView needs it
+    // @EnvironmentObject private var appState: AppState // Retain if ContentView needs it
+
     var body: some View {
-        TabView(selection: $appState.selectedTab) {
-            DailyFocusView()
-                .tabItem {
-                    Label("Daily Focus", systemImage: "target")
-                }
-                .tag(0)
-            
-            PillarTrackerView()
-                .tabItem {
-                    Label("Pillars", systemImage: "chart.bar")
-                }
-                .tag(1)
-            
-            JournalView()
-                .tabItem {
-                    Label("Journal", systemImage: "book")
-                }
-                .tag(2)
-            
-            WeeklyReviewView()
-                .tabItem {
-                    Label("Weekly Review", systemImage: "calendar")
-                }
-                .tag(3)
-        }
+        TodayView() 
+        // TodayView will pick up modelContext and appState from the environment
+        // set by valenceApp.swift.
     }
 }
 
 #Preview {
+    // ContentView now displays TodayView.
+    // TodayView's preview already includes the necessary models (Pillar, ScoreEntry, JournalEntry, DailyFocus)
+    // So, we align ContentView's preview with what TodayView requires.
     ContentView()
-        .modelContainer(for: [DailyFocus.self, Pillar.self, WeeklyReview.self, JournalEntry.self], inMemory: true)
-        .environmentObject(AppState())
+        .modelContainer(for: [
+            Pillar.self, 
+            ScoreEntry.self, 
+            JournalEntry.self, 
+            DailyFocus.self 
+            // Add any other models TodayView or its subviews might need.
+            // WeeklyReview.self might not be directly needed by TodayView,
+            // but including it if other parts of the app (previously in TabView) might be reintroduced.
+            // For this specific change, focusing on TodayView's direct needs.
+        ], inMemory: true)
+        .environmentObject(AppState()) // AppState is provided by valenceApp
 }

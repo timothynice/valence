@@ -115,7 +115,7 @@ struct PillarCard: View {
 struct AddPillarSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedType: PillarType = .physical
+    @State private var selectedType: PillarType = .fitness // Updated default
     @State private var score: Double = 5
     @State private var notes = ""
     
@@ -208,16 +208,8 @@ struct PillarDetailSheet: View {
     }
 }
 
-extension PillarType: CaseIterable {
-    static var allCases: [PillarType] = [
-        .physical,
-        .mental,
-        .emotional,
-        .spiritual,
-        .social,
-        .professional
-    ]
-}
+// Removed incorrect extension PillarType: CaseIterable
+// The enum itself in Pillar.swift is already CaseIterable and provides the correct cases.
 
 #Preview {
     PillarTrackerView()
